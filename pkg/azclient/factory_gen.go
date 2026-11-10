@@ -35,6 +35,8 @@ import (
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/diskclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileservicepropertiesclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileshareclient"
+	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpclient"
+	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpsnapshotclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/identityclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/interfaceclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/ipgroupclient"
@@ -82,6 +84,8 @@ type ClientFactoryImpl struct {
 	diskclientInterface                     sync.Map
 	fileservicepropertiesclientInterface    sync.Map
 	fileshareclientInterface                sync.Map
+	filesharesrpclientInterface             sync.Map
+	filesharesrpsnapshotclientInterface     sync.Map
 	identityclientInterface                 identityclient.Interface
 	interfaceclientInterface                interfaceclient.Interface
 	ipgroupclientInterface                  ipgroupclient.Interface
@@ -180,6 +184,18 @@ func NewClientFactory(config *ClientFactoryConfig, armConfig *ARMClientConfig, c
 
 	//initialize fileshareclient
 	_, err = factory.GetFileShareClientForSub(config.SubscriptionID)
+	if err != nil {
+		return nil, err
+	}
+
+	//initialize filesharesrpclient
+	_, err = factory.GetFileSharesRPClientForSub(config.SubscriptionID)
+	if err != nil {
+		return nil, err
+	}
+
+	//initialize filesharesrpsnapshotclient
+	_, err = factory.GetFileSharesRPSnapshotClientForSub(config.SubscriptionID)
 	if err != nil {
 		return nil, err
 	}
@@ -682,6 +698,78 @@ func (factory *ClientFactoryImpl) GetFileShareClientForSub(subscriptionID string
 	}
 	factory.fileshareclientInterface.Store(strings.ToLower(subscriptionID), clientImp)
 	return clientImp.(fileshareclient.Interface), nil
+}
+
+func (factory *ClientFactoryImpl) createFileSharesRPClient(subscription string) (filesharesrpclient.Interface, error) {
+	//initialize filesharesrpclient
+	options, err := GetDefaultResourceClientOption(factory.armConfig)
+	if err != nil {
+		return nil, err
+	}
+	options.Cloud = factory.cloudConfig
+	for _, optionMutFn := range factory.clientOptionsMutFn {
+		if optionMutFn != nil {
+			optionMutFn(options)
+		}
+	}
+	return filesharesrpclient.New(subscription, factory.cred, options)
+}
+
+func (factory *ClientFactoryImpl) GetFileSharesRPClient() filesharesrpclient.Interface {
+	clientImp, _ := factory.filesharesrpclientInterface.Load(strings.ToLower(factory.factoryConfig.SubscriptionID))
+	return clientImp.(filesharesrpclient.Interface)
+}
+func (factory *ClientFactoryImpl) GetFileSharesRPClientForSub(subscriptionID string) (filesharesrpclient.Interface, error) {
+	if subscriptionID == "" {
+		subscriptionID = factory.factoryConfig.SubscriptionID
+	}
+	clientImp, loaded := factory.filesharesrpclientInterface.Load(strings.ToLower(subscriptionID))
+	if loaded {
+		return clientImp.(filesharesrpclient.Interface), nil
+	}
+	//It's not thread safe, but it's ok for now. because it will be called once.
+	clientImp, err := factory.createFileSharesRPClient(subscriptionID)
+	if err != nil {
+		return nil, err
+	}
+	factory.filesharesrpclientInterface.Store(strings.ToLower(subscriptionID), clientImp)
+	return clientImp.(filesharesrpclient.Interface), nil
+}
+
+func (factory *ClientFactoryImpl) createFileSharesRPSnapshotClient(subscription string) (filesharesrpsnapshotclient.Interface, error) {
+	//initialize filesharesrpsnapshotclient
+	options, err := GetDefaultResourceClientOption(factory.armConfig)
+	if err != nil {
+		return nil, err
+	}
+	options.Cloud = factory.cloudConfig
+	for _, optionMutFn := range factory.clientOptionsMutFn {
+		if optionMutFn != nil {
+			optionMutFn(options)
+		}
+	}
+	return filesharesrpsnapshotclient.New(subscription, factory.cred, options)
+}
+
+func (factory *ClientFactoryImpl) GetFileSharesRPSnapshotClient() filesharesrpsnapshotclient.Interface {
+	clientImp, _ := factory.filesharesrpsnapshotclientInterface.Load(strings.ToLower(factory.factoryConfig.SubscriptionID))
+	return clientImp.(filesharesrpsnapshotclient.Interface)
+}
+func (factory *ClientFactoryImpl) GetFileSharesRPSnapshotClientForSub(subscriptionID string) (filesharesrpsnapshotclient.Interface, error) {
+	if subscriptionID == "" {
+		subscriptionID = factory.factoryConfig.SubscriptionID
+	}
+	clientImp, loaded := factory.filesharesrpsnapshotclientInterface.Load(strings.ToLower(subscriptionID))
+	if loaded {
+		return clientImp.(filesharesrpsnapshotclient.Interface), nil
+	}
+	//It's not thread safe, but it's ok for now. because it will be called once.
+	clientImp, err := factory.createFileSharesRPSnapshotClient(subscriptionID)
+	if err != nil {
+		return nil, err
+	}
+	factory.filesharesrpsnapshotclientInterface.Store(strings.ToLower(subscriptionID), clientImp)
+	return clientImp.(filesharesrpsnapshotclient.Interface), nil
 }
 
 func (factory *ClientFactoryImpl) createIdentityClient(subscription string) (identityclient.Interface, error) {

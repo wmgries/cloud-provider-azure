@@ -27,6 +27,8 @@ import (
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/diskclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileservicepropertiesclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileshareclient"
+	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpclient"
+	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpsnapshotclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/identityclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/interfaceclient"
 	"sigs.k8s.io/cloud-provider-azure/pkg/azclient/ipgroupclient"
@@ -73,6 +75,10 @@ type ClientFactory interface {
 	GetFileServicePropertiesClientForSub(subscriptionID string) (fileservicepropertiesclient.Interface, error)
 	GetFileShareClient() fileshareclient.Interface
 	GetFileShareClientForSub(subscriptionID string) (fileshareclient.Interface, error)
+	GetFileSharesRPClient() filesharesrpclient.Interface
+	GetFileSharesRPClientForSub(subscriptionID string) (filesharesrpclient.Interface, error)
+	GetFileSharesRPSnapshotClient() filesharesrpsnapshotclient.Interface
+	GetFileSharesRPSnapshotClientForSub(subscriptionID string) (filesharesrpsnapshotclient.Interface, error)
 	GetIdentityClient() identityclient.Interface
 	GetInterfaceClient() interfaceclient.Interface
 	GetIPGroupClient() ipgroupclient.Interface

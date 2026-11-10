@@ -40,6 +40,8 @@ import (
 	diskclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/diskclient"
 	fileservicepropertiesclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileservicepropertiesclient"
 	fileshareclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/fileshareclient"
+	filesharesrpclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpclient"
+	filesharesrpsnapshotclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/filesharesrpsnapshotclient"
 	identityclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/identityclient"
 	interfaceclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/interfaceclient"
 	ipgroupclient "sigs.k8s.io/cloud-provider-azure/pkg/azclient/ipgroupclient"
@@ -308,6 +310,64 @@ func (m *MockClientFactory) GetFileShareClientForSub(subscriptionID string) (fil
 func (mr *MockClientFactoryMockRecorder) GetFileShareClientForSub(subscriptionID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileShareClientForSub", reflect.TypeOf((*MockClientFactory)(nil).GetFileShareClientForSub), subscriptionID)
+}
+
+// GetFileSharesRPClient mocks base method.
+func (m *MockClientFactory) GetFileSharesRPClient() filesharesrpclient.Interface {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFileSharesRPClient")
+	ret0, _ := ret[0].(filesharesrpclient.Interface)
+	return ret0
+}
+
+// GetFileSharesRPClient indicates an expected call of GetFileSharesRPClient.
+func (mr *MockClientFactoryMockRecorder) GetFileSharesRPClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileSharesRPClient", reflect.TypeOf((*MockClientFactory)(nil).GetFileSharesRPClient))
+}
+
+// GetFileSharesRPClientForSub mocks base method.
+func (m *MockClientFactory) GetFileSharesRPClientForSub(subscriptionID string) (filesharesrpclient.Interface, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFileSharesRPClientForSub", subscriptionID)
+	ret0, _ := ret[0].(filesharesrpclient.Interface)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFileSharesRPClientForSub indicates an expected call of GetFileSharesRPClientForSub.
+func (mr *MockClientFactoryMockRecorder) GetFileSharesRPClientForSub(subscriptionID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileSharesRPClientForSub", reflect.TypeOf((*MockClientFactory)(nil).GetFileSharesRPClientForSub), subscriptionID)
+}
+
+// GetFileSharesRPSnapshotClient mocks base method.
+func (m *MockClientFactory) GetFileSharesRPSnapshotClient() filesharesrpsnapshotclient.Interface {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFileSharesRPSnapshotClient")
+	ret0, _ := ret[0].(filesharesrpsnapshotclient.Interface)
+	return ret0
+}
+
+// GetFileSharesRPSnapshotClient indicates an expected call of GetFileSharesRPSnapshotClient.
+func (mr *MockClientFactoryMockRecorder) GetFileSharesRPSnapshotClient() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileSharesRPSnapshotClient", reflect.TypeOf((*MockClientFactory)(nil).GetFileSharesRPSnapshotClient))
+}
+
+// GetFileSharesRPSnapshotClientForSub mocks base method.
+func (m *MockClientFactory) GetFileSharesRPSnapshotClientForSub(subscriptionID string) (filesharesrpsnapshotclient.Interface, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFileSharesRPSnapshotClientForSub", subscriptionID)
+	ret0, _ := ret[0].(filesharesrpsnapshotclient.Interface)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFileSharesRPSnapshotClientForSub indicates an expected call of GetFileSharesRPSnapshotClientForSub.
+func (mr *MockClientFactoryMockRecorder) GetFileSharesRPSnapshotClientForSub(subscriptionID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileSharesRPSnapshotClientForSub", reflect.TypeOf((*MockClientFactory)(nil).GetFileSharesRPSnapshotClientForSub), subscriptionID)
 }
 
 // GetIPGroupClient mocks base method.
